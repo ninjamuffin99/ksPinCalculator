@@ -14,7 +14,6 @@ class Main
 	// todo
 	// seperate functions for bullshit
 	// get shipping country
-	// create new csv with only the data needed
 	public static var QUICKSHIT:String;
 	public static var infoRow:Record;
 
@@ -78,12 +77,27 @@ class Main
 			return output;
 		}
 
+		var shippingMap:Map<String, Int> = new Map();
+		var shippingBudget:Map<String, Float> = new Map();
+
 		var csvOutput:Csv = new Csv();
 
 		for (i in 0...csv.length)
 		{
 			var backer:Record = csv[i];
 			var tier:String = backer[6].toLowerCase().trim();
+
+			var country:String = backer[4];
+
+			if (shippingBudget.exists(country))
+				shippingBudget[country] += Std.parseFloat(backer[5].substr(1));
+			else
+				shippingBudget[country] = 0;
+
+			if (shippingMap.exists(country))
+				shippingMap[country] += 1;
+			else
+				shippingMap[country] = 0;
 
 			var addonMap:Map<Int, Int> = new Map();
 
@@ -130,6 +144,21 @@ class Main
 			}));
 			trace("FINISHED WRITING CSV FILE!");
 		}
+
+		var countryOutput:String = "";
+
+		for (shit in shippingMap.keys())
+		{
+			countryOutput += shit + " -- " + shippingMap[shit] + " $" + shippingBudget[shit] + "\n";
+		}
+
+		var daBudget:Float = 0;
+		for (alsoShit in shippingBudget)
+			daBudget += alsoShit;
+
+		countryOutput += "DA FULL SHIPPING BUDGET: $" + daBudget;
+
+		File.saveContent('output/shippingStuff.txt', countryOutput);
 
 		return daOutput;
 	}
