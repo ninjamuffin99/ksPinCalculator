@@ -15,12 +15,20 @@ class Main
 	// seperate functions for bullshit
 	// get shipping country
 	// create new csv with only the data needed
-	public static var QUICKSHIT:String = 'PinsPosters';
+	public static var QUICKSHIT:String;
 	public static var infoRow:Record;
+
+	public static var curConfig:Config;
 
 	static function main():Void
 	{
 		trace("PARSING CSV DATA");
+
+		curConfig = parseTxtArray('rewardTierConfigs/needle.json');
+		QUICKSHIT = curConfig.quickShit;
+
+		configTiersToLowercase();
+
 		var csv:String = "";
 
 		if (FileSystem.exists('input/ks${QUICKSHIT}.csv'))
@@ -47,16 +55,7 @@ class Main
 
 		var funnyCounter:BullshitOutput = {Both: 0, Single: 0, EitherOr: 0};
 
-		var rewardPoster:String = "friday night funkin poster";
-		var rewardPin:String = "enamel pin";
-
-		var tierTxt:Array<String> = parseTxtArray('rewardTierConfigs/coby.json');
-
-		for (t in tierTxt)
-			t.trim();
-		// trace(tierTxt);
-
-		funnyCounter = countRewards(csvData, tierTxt, [15, 19]);
+		funnyCounter = countRewards(csvData, curConfig.tiers, curConfig.addons);
 
 		trace(funnyCounter.Single + " PINS");
 		trace(funnyCounter.EitherOr + " USERS WITH PINS OR POSTERS");
@@ -93,12 +92,8 @@ class Main
 
 			if (getMapSum(addonMap) > 0 || tiers.contains(tier))
 			{
-				// trace('HAS TIER OR ADDON!');
-
 				csvOutput.push(backer);
-
 				daOutput.EitherOr++;
-				// userWitPinOrPoster++;
 				// has pins as addon
 
 				var hasAddon:Bool = true;
@@ -139,23 +134,17 @@ class Main
 		return daOutput;
 	}
 
-	static function parseTxtArray(txt:String):Array<String>
+	static function parseTxtArray(txt:String):Config
 	{
-		return cast Json.parse(File.getContent(txt)).tiers;
+		return cast Json.parse(File.getContent(txt));
 	}
 
-	static function parseCSVtoString(csvOutput:Csv):String
+	static function configTiersToLowercase()
 	{
-		var fin:String = "";
+		for (ind => tier in curConfig.tiers)
+			curConfig.tiers[ind] = tier.toLowerCase();
 
-		for (record in csvOutput)
-		{
-			var bullshit:String = record.toString();
-			bullshit = bullshit.substr(1, bullshit.length - 2);
-			fin += bullshit + "\n";
-		}
-
-		return fin;
+		trace(curConfig.tiers);
 	}
 }
 
@@ -169,4 +158,11 @@ typedef BullshitOutput =
 	Single:Int,
 	EitherOr:Int,
 	Both:Int
+}
+
+typedef Config =
+{
+	quickShit:String,
+	tiers:Array<String>,
+	addons:Array<Int>
 }
