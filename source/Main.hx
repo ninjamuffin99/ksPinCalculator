@@ -3,9 +3,9 @@ package;
 import format.csv.*;
 import format.csv.Data.Csv;
 import format.csv.Data.Record;
+import haxe.Json;
 import sys.FileSystem;
 import sys.io.File;
-import sys.thread.Thread;
 
 using StringTools;
 
@@ -46,14 +46,17 @@ class Main
 		}
 
 		var funnyCounter:BullshitOutput = {Both: 0, Single: 0, EitherOr: 0};
-		var pinCounter:Int = 0;
-		var userWitPinOrPoster:Int = 0;
-		var pinAndPoster:Int = 0;
 
 		var rewardPoster:String = "friday night funkin poster";
 		var rewardPin:String = "enamel pin";
 
-		funnyCounter = countRewards(csvData, [rewardPin, rewardPoster], [15, 19]);
+		var tierTxt:Array<String> = parseTxtArray('rewardTierConfigs/coby.json');
+
+		for (t in tierTxt)
+			t.trim();
+		// trace(tierTxt);
+
+		funnyCounter = countRewards(csvData, tierTxt, [15, 19]);
 
 		trace(funnyCounter.Single + " PINS");
 		trace(funnyCounter.EitherOr + " USERS WITH PINS OR POSTERS");
@@ -134,6 +137,11 @@ class Main
 		}
 
 		return daOutput;
+	}
+
+	static function parseTxtArray(txt:String):Array<String>
+	{
+		return cast Json.parse(File.getContent(txt)).tiers;
 	}
 
 	static function parseCSVtoString(csvOutput:Csv):String
