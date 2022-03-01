@@ -1,3 +1,4 @@
 --library csv
+--class-path source
 --main Main
 --interp
