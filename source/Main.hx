@@ -45,6 +45,7 @@ class Main
 			trace(item + " :===: " + index);
 		}
 
+		var funnyCounter:BullshitOutput = {Both: 0, Single: 0, EitherOr: 0};
 		var pinCounter:Int = 0;
 		var userWitPinOrPoster:Int = 0;
 		var pinAndPoster:Int = 0;
@@ -52,19 +53,18 @@ class Main
 		var rewardPoster:String = "friday night funkin poster";
 		var rewardPin:String = "enamel pin";
 
-		pinCounter = countRewards(csvData, [rewardPin, rewardPoster], [15, 19]);
+		funnyCounter = countRewards(csvData, [rewardPin, rewardPoster], [15, 19]);
 
-		trace(pinCounter + " PINS");
-		trace(userWitPinOrPoster + " USERS WITH PINS OR POSTERS");
-		trace(pinAndPoster + " USERS WITH PINS AND POSTERS");
-		var onlyOne:Int = userWitPinOrPoster - pinAndPoster;
+		trace(funnyCounter.Single + " PINS");
+		trace(funnyCounter.EitherOr + " USERS WITH PINS OR POSTERS");
+		trace(funnyCounter.Both + " USERS WITH PINS AND POSTERS");
+		var onlyOne:Int = funnyCounter.EitherOr - funnyCounter.Both;
 		trace(onlyOne + " USERS WITH ONLY A PIN OR A POSTER");
 	}
 
-	public static function countRewards(csv:Csv, tiers:Array<String>, addonsArray:Array<Int>):Int
+	public static function countRewards(csv:Csv, tiers:Array<String>, addonsArray:Array<Int>):BullshitOutput
 	{
-		var inc:Int = 0;
-
+		var daOutput:BullshitOutput = {Both: 0, EitherOr: 0, Single: 0};
 		function getMapSum(daMap:Map<Int, Int>):Int
 		{
 			var output:Int = 0;
@@ -83,11 +83,6 @@ class Main
 			var backer:Record = csv[i];
 			var tier:String = backer[6].toLowerCase().trim();
 
-			var pinUnparsed:String = backer[15];
-			var pins:Int = Std.parseInt(pinUnparsed);
-
-			var posters:Int = Std.parseInt(backer[19]);
-
 			var addonMap:Map<Int, Int> = new Map();
 
 			for (addon in addonsArray)
@@ -99,8 +94,21 @@ class Main
 
 				csvOutput.push(backer);
 
+				daOutput.EitherOr++;
 				// userWitPinOrPoster++;
 				// has pins as addon
+
+				var hasAddon:Bool = true;
+				for (num in addonMap)
+				{
+					if (num == 0)
+						hasAddon = false;
+				}
+
+				if (hasAddon)
+				{
+					daOutput.Both++;
+				}
 
 				// if ((pins > 0 || tier == rewardPin) && (posters > 0 || tier == rewardPoster))
 				// {
@@ -108,7 +116,7 @@ class Main
 				// }
 			}
 
-			inc += Std.parseInt(backer[15]);
+			daOutput.Single += Std.parseInt(backer[15]);
 		}
 
 		csvOutput.unshift(infoRow);
@@ -125,7 +133,7 @@ class Main
 			trace("FINISHED WRITING CSV FILE!");
 		}
 
-		return inc;
+		return daOutput;
 	}
 
 	static function parseCSVtoString(csvOutput:Csv):String
