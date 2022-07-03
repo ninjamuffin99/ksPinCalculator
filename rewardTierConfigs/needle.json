@@ -4,7 +4,31 @@
         "THE PHYSICAL OST COMBO MEAL",
         "Physical OST - Volume 1: VINYL",
         "Physical OST - Volume 1: CASSETTES",
-        "Physical OST - Volume 1: CDs"
+        "Physical OST - Volume 1: CDs",
+        "VINYL TEST PRESSINGS"
     ],
-    "addons": [16, 17, 20, 22, 23]
+    "addons": [16, 17, 20, 22, 23],
+    "productIDs": [
+        "LP - 43572",
+        "CD - 43573",
+        "Tape - 43574"
+    ],
+    "outputStuff": [
+        "customer_user/3",
+        "billing_first_name/2",
+        "billing_email/3",
+        "order_total",
+        "line_items",
+        "shipping_total",
+        "shipping_items",
+        "shipping_first_name/42",
+        "shipping_address_1/43",
+        "shipping_address_2/44",
+        "shipping_city/45",
+        "shipping_state/46",
+        "shipping_postcode/47",
+        "shipping_country/48",
+        "customer_note/51",
+        "billing_phone/50"
+    ]
 }

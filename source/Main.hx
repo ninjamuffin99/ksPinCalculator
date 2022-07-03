@@ -14,6 +14,8 @@ class Main
 	// todo
 	// seperate functions for bullshit
 	// get shipping country
+	// parse it into a thing for needlejuice
+	// parse it into a thing for Coby
 	public static var QUICKSHIT:String;
 	public static var infoRow:Record;
 
@@ -44,13 +46,7 @@ class Main
 
 		infoRow = csvData.shift();
 
-		var ksBackerMap:Map<String, Int> = new Map();
-		trace("KS SHIIIT");
-		for (index => item in infoRow)
-		{
-			ksBackerMap[item] = index;
-			trace(item + " :===: " + index);
-		}
+		traceKickstarterMap();
 
 		var funnyCounter:BullshitOutput = {Both: 0, Single: 0, EitherOr: 0};
 
@@ -61,6 +57,45 @@ class Main
 		trace(funnyCounter.Both + " USERS WITH PINS AND POSTERS");
 		var onlyOne:Int = funnyCounter.EitherOr - funnyCounter.Both;
 		trace(onlyOne + " USERS WITH ONLY A PIN OR A POSTER");
+
+		addressExport(csvData);
+	}
+
+	public static function addressExport(csv:Csv)
+	{
+		var header:Record = new Record();
+
+		for (stuff in curConfig.outputStuff)
+			header.push(getOutputForm(stuff));
+
+		var csvOutput:Csv = new Csv();
+
+		csvOutput.push(header);
+
+		for (backer in csv)
+		{
+			var backerOutput:Record = new Record();
+
+			for (i in 0...header.length)
+			{
+				var prefillStr:String = curConfig.outputStuff[i];
+				var prefill:Int = getOutputPrefill(prefillStr);
+
+				if (prefill == null)
+					backerOutput.push("");
+				else
+					backerOutput.push(backer[prefill]);
+			}
+
+			csvOutput.push(backerOutput);
+		}
+
+		File.saveContent('output/addressOutput-' + curConfig.quickShit + ".csv", Dsv.encode(csvOutput, {
+			delimiter: ',',
+			quote: '"',
+			escapedQuote: '""',
+			newline: "\n"
+		}));
 	}
 
 	public static function countRewards(csv:Csv, tiers:Array<String>, addonsArray:Array<Int>):BullshitOutput
@@ -116,6 +151,9 @@ class Main
 					if (num == 0)
 						hasAddon = false;
 				}
+
+				if (tier == tiers[1])
+					daOutput.Single += 1;
 
 				if (hasAddon)
 				{
@@ -175,6 +213,32 @@ class Main
 
 		trace(curConfig.tiers);
 	}
+
+	static function traceKickstarterMap()
+	{
+		var ksBackerMap:Map<String, Int> = new Map();
+		trace("KS SHIIIT");
+		for (index => item in infoRow)
+		{
+			ksBackerMap[item] = index;
+			trace(item + " :===: " + index);
+		}
+	}
+
+	static function getOutputForm(outputField:String):String
+	{
+		return outputField.split("/")[0];
+	}
+
+	static function getOutputPrefill(outputField:String):Int
+	{
+		return Std.parseInt(outputField.split('/')[1]);
+	}
+
+	static function formatProductID(productString:String):String
+	{
+		return "product_id:" + productString.split("- ")[1]; // anything after "- ", which is the number as a string;
+	}
 }
 
 typedef Backer =
@@ -193,5 +257,7 @@ typedef Config =
 {
 	quickShit:String,
 	tiers:Array<String>,
-	addons:Array<Int>
+	addons:Array<Int>,
+	productIDs:Array<String>,
+	outputStuff:Array<String>
 }
