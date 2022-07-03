@@ -103,6 +103,11 @@ class Main
 							backerOutput.push("0");
 						case "shipping_items":
 							backerOutput.push('method_id:flat_rate|total:0');
+						case "customer_note":
+							var output:String = backer[0];
+							output += " - Shipping note: " + backer[51];
+
+							backerOutput.push(output);
 						case "line_items":
 							var output:String = "";
 

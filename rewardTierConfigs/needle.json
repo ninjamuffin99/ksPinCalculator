@@ -29,7 +29,7 @@
         "shipping_state/46",
         "shipping_postcode/47",
         "shipping_country/48",
-        "customer_note/51",
+        "customer_note",
         "billing_phone/50"
     ],
     "tierInc": [
