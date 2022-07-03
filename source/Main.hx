@@ -72,23 +72,54 @@ class Main
 
 		csvOutput.push(header);
 
+		var noAddress:Array<Record> = [];
+		noAddress.push(infoRow);
+
 		for (backer in csv)
 		{
 			var backerOutput:Record = new Record();
+
+			if (backer[43] == "")
+			{
+				noAddress.push(backer);
+
+				continue;
+			}
 
 			for (i in 0...header.length)
 			{
 				var prefillStr:String = curConfig.outputStuff[i];
 				var prefill:Int = getOutputPrefill(prefillStr);
 
-				if (prefill == null)
-					backerOutput.push("");
-				else
+				if (prefill != null)
 					backerOutput.push(backer[prefill]);
+				else
+				{
+					switch (header[i])
+					{
+						case "order_total":
+							backerOutput.push("0");
+						case "shipping_total":
+							backerOutput.push("0");
+						case "shipping_items":
+							backerOutput.push('method_id:flat_rate|total:0');
+						default:
+							backerOutput.push("");
+					}
+				}
 			}
 
 			csvOutput.push(backerOutput);
 		}
+
+		trace(noAddress.length + " BACKERS WITH NO ADDRESS!!!");
+
+		File.saveContent('output/noAddress-' + curConfig.quickShit + ".csv", Dsv.encode(noAddress, {
+			delimiter: ',',
+			quote: '"',
+			escapedQuote: '""',
+			newline: "\n"
+		}));
 
 		File.saveContent('output/addressOutput-' + curConfig.quickShit + ".csv", Dsv.encode(csvOutput, {
 			delimiter: ',',

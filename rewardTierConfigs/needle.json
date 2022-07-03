@@ -11,7 +11,8 @@
     "productIDs": [
         "LP - 43572",
         "CD - 43573",
-        "Tape - 43574"
+        "Tape - 43574",
+        "LPTest - 46085"
     ],
     "outputStuff": [
         "customer_user/3",
