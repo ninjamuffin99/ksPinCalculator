@@ -8,6 +8,8 @@ more maneagable csv files!
 
 Exports the data for WooCommerce i think is what it's called, to import into needlejuice's system!
 
+A lot of this is funny code!!! Really specific to the FNF usecase !!!
+
 ![alt text](https://c.tenor.com/rbwgRtQyrqsAAAAC/chao-sonic.gif)
 
 lol!

@@ -103,6 +103,21 @@ class Main
 							backerOutput.push("0");
 						case "shipping_items":
 							backerOutput.push('method_id:flat_rate|total:0');
+						case "line_items":
+							var output:String = "";
+
+							var backerMap:Map<Int, Int> = countBackerReward(backer);
+
+							for (prodKey in backerMap.keys())
+							{
+								if (backerMap[prodKey] > 0)
+								{
+									output += "product_id:" + prodKey + "|quantity:" + backerMap[prodKey] + "|total:0;";
+								}
+							}
+
+							backerOutput.push(output);
+
 						default:
 							backerOutput.push("");
 					}
@@ -127,6 +142,56 @@ class Main
 			escapedQuote: '""',
 			newline: "\n"
 		}));
+	}
+
+	static function countBackerReward(backer:Record):Map<Int, Int>
+	{
+		var productMap:Map<Int, Int> = new Map();
+
+		for (product in curConfig.productIDs)
+		{
+			var prodID:Int = Std.parseInt(product.split(' - ')[1]);
+			productMap[prodID] = 0;
+		}
+
+		var tierMap:Map<String, Array<Int>> = new Map();
+
+		for (index => tier in curConfig.tiers)
+		{
+			tierMap[tier] = curConfig.tierInc[index];
+		}
+
+		if (tierMap[backer[6].toLowerCase()] != null)
+		{
+			for (prod in tierMap[backer[6].toLowerCase()])
+				productMap[prod] += 1;
+		}
+
+		// trace(tierMap[backer[6].toLowerCase()]);
+
+		/* 	for (index => tier in curConfig.tiers)
+			{
+				if (backer[6].trim() == tier)
+				{
+					trace('FOUND TIER: ' + tier);
+					for (prod in curConfig.tierInc[index])
+						productMap[prod] += 1;
+				}
+		}*/
+
+		for (index => addon in curConfig.addonInc)
+		{
+			var products:Array<Int> = addon[1];
+
+			for (prod in products)
+			{
+				productMap[prod] += Std.parseInt(backer[addon[0]]);
+			}
+		}
+
+		return productMap;
+
+		// trace(backer[0] + " - " + productMap);
 	}
 
 	public static function countRewards(csv:Csv, tiers:Array<String>, addonsArray:Array<Int>):BullshitOutput
@@ -290,5 +355,7 @@ typedef Config =
 	tiers:Array<String>,
 	addons:Array<Int>,
 	productIDs:Array<String>,
-	outputStuff:Array<String>
+	outputStuff:Array<String>,
+	tierInc:Array<Array<Int>>,
+	addonInc:Array<Dynamic>
 }
