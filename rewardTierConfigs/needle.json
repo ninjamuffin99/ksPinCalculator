@@ -5,7 +5,8 @@
         "Physical OST - Volume 1: VINYL",
         "Physical OST - Volume 1: CASSETTES",
         "Physical OST - Volume 1: CDs",
-        "VINYL TEST PRESSINGS"
+        "VINYL TEST PRESSINGS",
+        "TANKMAN Statue"
     ],
     "addons": [16, 17, 20, 22, 23],
     "productIDs": [
@@ -37,7 +38,8 @@
         [43572],
         [43574],
         [43573],
-        [46085]
+        [46085],
+        [43572, 43573, 43574]
     ],
     "addonInc": [
         [16, [43574]],

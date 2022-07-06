@@ -11,11 +11,6 @@ using StringTools;
 
 class Main
 {
-	// todo
-	// seperate functions for bullshit
-	// get shipping country
-	// parse it into a thing for needlejuice
-	// parse it into a thing for Coby
 	public static var QUICKSHIT:String;
 	public static var infoRow:Record;
 
@@ -79,12 +74,27 @@ class Main
 		{
 			var backerOutput:Record = new Record();
 
-			if (backer[43] == "")
+			if (backer[43] == "" && backer[44] == "")
 			{
 				noAddress.push(backer);
 
 				continue;
 			}
+
+			var line_items_output:String = "";
+
+			var backerMap:Map<Int, Int> = countBackerReward(backer);
+
+			for (prodKey in backerMap.keys())
+			{
+				if (backerMap[prodKey] > 0)
+				{
+					line_items_output += "product_id:" + prodKey + "|quantity:" + backerMap[prodKey] + "|total:0;";
+				}
+			}
+
+			if (line_items_output == "") // did not have any items in this tier
+				continue;
 
 			for (i in 0...header.length)
 			{
@@ -109,19 +119,7 @@ class Main
 
 							backerOutput.push(output);
 						case "line_items":
-							var output:String = "";
-
-							var backerMap:Map<Int, Int> = countBackerReward(backer);
-
-							for (prodKey in backerMap.keys())
-							{
-								if (backerMap[prodKey] > 0)
-								{
-									output += "product_id:" + prodKey + "|quantity:" + backerMap[prodKey] + "|total:0;";
-								}
-							}
-
-							backerOutput.push(output);
+							backerOutput.push(line_items_output);
 
 						default:
 							backerOutput.push("");
