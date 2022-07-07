@@ -16,22 +16,22 @@
         "LPTest - 46085"
     ],
     "outputStuff": [
-        "customer_user/3",
-        "billing_first_name/2",
-        "billing_email/3",
+        "customer_user:3",
+        "billing_first_name:2",
+        "billing_email:3",
         "order_total",
         "line_items",
         "shipping_total",
         "shipping_items",
-        "shipping_first_name/42",
-        "shipping_address_1/43",
-        "shipping_address_2/44",
-        "shipping_city/45",
-        "shipping_state/46",
-        "shipping_postcode/47",
-        "shipping_country/48",
+        "shipping_first_name:42",
+        "shipping_address_1:43",
+        "shipping_address_2:44",
+        "shipping_city:45",
+        "shipping_state:46",
+        "shipping_postcode:47",
+        "shipping_country:48",
         "customer_note",
-        "billing_phone/50"
+        "billing_phone:50"
     ],
     "tierInc": [
         [43572, 43573, 43574],

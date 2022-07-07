@@ -20,7 +20,7 @@ class Main
 	{
 		trace("PARSING CSV DATA");
 
-		curConfig = parseTxtArray('rewardTierConfigs/needle.json');
+		curConfig = parseTxtArray('rewardTierConfigs/coby.json');
 		QUICKSHIT = curConfig.quickShit;
 
 		configTiersToLowercase();
@@ -81,20 +81,38 @@ class Main
 				continue;
 			}
 
-			var line_items_output:String = "";
+			var itemsList:Array<String> = [];
+			itemsList.push("");
 
 			var backerMap:Map<Int, Int> = countBackerReward(backer);
 
 			for (prodKey in backerMap.keys())
 			{
-				if (backerMap[prodKey] > 0)
+				if (QUICKSHIT == "NeedleJuice")
 				{
-					line_items_output += "product_id:" + prodKey + "|quantity:" + backerMap[prodKey] + "|total:0;";
+					if (backerMap[prodKey] > 0)
+					{
+						itemsList[0] += "product_id:" + prodKey + "|quantity:" + backerMap[prodKey] + "|total:0;";
+					}
+				}
+				if (QUICKSHIT == "PinsPosters")
+				{
+					if (backerMap[prodKey] > 0)
+					{
+						// trace('SWAG UP: ' + backerMap[prodKey] + " " + prodKey);
+						itemsList[itemsList.length - 1] = Std.string(prodKey);
+						itemsList.push("");
+						// itemsList[0] += "product_id:" + prodKey + "|quantity:" + backerMap[prodKey] + "|total:0;";
+					}
 				}
 			}
 
-			if (line_items_output == "") // did not have any items in this tier
+			if (itemsList[0] == "")
+			{
+				// trace("NO ITEMS???");
+				// did not have any items in this tier
 				continue;
+			}
 
 			for (i in 0...header.length)
 			{
@@ -102,11 +120,30 @@ class Main
 				var prefill:Int = getOutputPrefill(prefillStr);
 
 				if (prefill != null)
+				{
+					// trace("PREFILL WROK");
 					backerOutput.push(backer[prefill]);
+				}
 				else
 				{
+					// trace("OUTPUT LOL!");
 					switch (header[i])
 					{
+						case "Includes Pin Set?":
+							// backerOutput.push("PINS");
+							for (item in itemsList)
+							{
+								if (item == getProdId(curConfig.productIDs[0]))
+									backerOutput.push(Std.string(backerMap[Std.parseInt(item)]));
+							}
+						case "Includes Poster?":
+							// backerOutput.push('POSTER');
+							for (item in itemsList)
+							{
+								if (item == getProdId(curConfig.productIDs[1]))
+									backerOutput.push(Std.string(backerMap[Std.parseInt(item)]));
+							}
+
 						case "order_total":
 							backerOutput.push("0");
 						case "shipping_total":
@@ -119,7 +156,7 @@ class Main
 
 							backerOutput.push(output);
 						case "line_items":
-							backerOutput.push(line_items_output);
+							backerOutput.push(itemsList[0]);
 
 						default:
 							backerOutput.push("");
@@ -326,17 +363,22 @@ class Main
 
 	static function getOutputForm(outputField:String):String
 	{
-		return outputField.split("/")[0];
+		return outputField.split(":")[0];
 	}
 
 	static function getOutputPrefill(outputField:String):Int
 	{
-		return Std.parseInt(outputField.split('/')[1]);
+		return Std.parseInt(outputField.split(':')[1]);
 	}
 
 	static function formatProductID(productString:String):String
 	{
-		return "product_id:" + productString.split("- ")[1]; // anything after "- ", which is the number as a string;
+		return "product_id:" + getProdId(productString); // anything after "- ", which is the number as a string;
+	}
+
+	static function getProdId(prodstring:String):String
+	{
+		return prodstring.split(" - ")[1];
 	}
 }
 

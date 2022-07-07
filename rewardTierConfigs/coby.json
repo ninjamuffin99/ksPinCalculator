@@ -2,7 +2,36 @@
     "quickShit": "PinsPosters",
     "tiers": [
         "friday night funkin poster",
-        "enamel pin"
+        "enamel pin",
+        "TANKMAN Statue"
     ],
-    "addons": [15, 19]
+    "addons": [15, 19],
+    "productIDs": [
+        "PINS - 0",
+        "POSTERS - 1"
+    ],
+    "outputStuff": [
+        "Contact Name:42",
+        "Company or Name:42",
+        "Country:49",
+        "Address 1:43",
+        "Address 2:44",
+        "Address 3",
+        "City:45",
+        "State/Prov/Other:46",
+        "Postal Code:47",
+        "Telephone:50",
+        "Includes Pin Set?",
+        "Includes Poster?"
+    ],
+    "tierInc": [
+        [1],
+        [0],
+        [0, 1]
+    ],
+    "addonInc": [
+        [15, [0]],
+        [16, [1]]
+    ]
+
 }
