@@ -97,13 +97,24 @@ class Main
 				}
 				if (QUICKSHIT == "PinsPosters")
 				{
-					if (backerMap[prodKey] > 0)
+					switch (prodKey)
 					{
-						// trace('SWAG UP: ' + backerMap[prodKey] + " " + prodKey);
-						itemsList[itemsList.length - 1] = Std.string(prodKey);
-						itemsList.push("");
-						// itemsList[0] += "product_id:" + prodKey + "|quantity:" + backerMap[prodKey] + "|total:0;";
+						case 0:
+							itemsList[0] = Std.string(backerMap[prodKey]);
+						case 1:
+							if (itemsList.length == 1)
+								itemsList.push("");
+
+							itemsList[1] = Std.string(backerMap[prodKey]);
 					}
+
+					// if (backerMap[prodKey] > 0)
+					// {
+					// 	// trace('SWAG UP: ' + backerMap[prodKey] + " " + prodKey);
+					// 	itemsList[itemsList.length - 1] = Std.string(prodKey);
+					// 	itemsList.push("");
+					// 	// itemsList[0] += "product_id:" + prodKey + "|quantity:" + backerMap[prodKey] + "|total:0;";
+					// }
 				}
 			}
 
@@ -131,19 +142,24 @@ class Main
 					{
 						case "Includes Pin Set?":
 							// backerOutput.push("PINS");
-							for (item in itemsList)
-							{
-								if (item == getProdId(curConfig.productIDs[0]))
-									backerOutput.push(Std.string(backerMap[Std.parseInt(item)]));
-							}
+							backerOutput.push(itemsList[0]);
+
+						// for (item in itemsList)
+						// {
+						// 	if (item == getProdId(curConfig.productIDs[0]))
+						// 		backerOutput.push(Std.string(backerMap[Std.parseInt(item)]));
+						// }
 						case "Includes Poster?":
 							// backerOutput.push('POSTER');
-							for (item in itemsList)
-							{
-								if (item == getProdId(curConfig.productIDs[1]))
-									backerOutput.push(Std.string(backerMap[Std.parseInt(item)]));
-							}
-
+							backerOutput.push(itemsList[1]);
+						// for (item in itemsList)
+						// {
+						// 	if (item == getProdId(curConfig.productIDs[1]))
+						// 		backerOutput.push(Std.string(backerMap[Std.parseInt(item)]));
+						// }
+						case "Company or Name":
+							var out:String = backer[42] + " - Backer: " + backer[0];
+							backerOutput.push(out);
 						case "order_total":
 							backerOutput.push("0");
 						case "shipping_total":
